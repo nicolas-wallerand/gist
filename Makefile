@@ -1,8 +1,12 @@
-COMPOSER ?= composer
-BOWER ?= bower
-GIT ?= git
-MKDIR ?= mkdir
-PHP ?= php
+export COMPOSER 		?= composer
+export BOWER 			?= bower
+export GIT 				?= git
+export MKDIR 			?= mkdir
+export PHP 			 	?= php
+export COMPOSE_FILE	 	?= docker-compose.yml
+export COMPOSE_PROJECT_NAME ?= gist
+
+docker-compose = docker-compose --file ${COMPOSE_FILE} --project-name ${COMPOSE_PROJECT_NAME}
 
 all: update
 
@@ -42,7 +46,13 @@ run:
 	@echo "----------------------"
 	@echo 
 
-	$(PHP) -S 127.0.0.1:8080 -t web
+	${docker-compose} up --build --remove-orphans -d app
+
+vendor: composer.lock
+	@{docker-compose} run --rm app composer install
+
+composer.lock: composer.json
+	@echo compose.lock is not up to date.
 
 propel:
 	@echo "Propel migration"

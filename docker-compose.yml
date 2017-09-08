@@ -1,0 +1,10 @@
+version: "2"
+
+services:
+
+  app:
+    build:
+      context: docker/images/application
+    volumes:
+      - .:/app
+    working_dir: $PWD
